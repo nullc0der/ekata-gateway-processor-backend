@@ -34,6 +34,8 @@ class ARQManager(object):
 
 
 class WorkerSettings:
+    redis_settings = RedisSettings(
+        host=settings.REDIS_HOST, port=settings.REDIS_PORT)
     functions = [
         auth.task_send_request_verify_email,
         auth.task_send_forgot_password_email,
