@@ -10,7 +10,7 @@ from app.db import mongo_manager
 from app.api.api_v1.api import api_router
 from app.worker import arq_manager
 from app.redis import redis_manager
-# from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
+from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
 
 
 dictConfig(settings.LOGGING_CONFIG)
@@ -40,7 +40,7 @@ async def startup():
     await mongo_manager.connect_to_database()
     await arq_manager.init_pool()
     await redis_manager.connect_to_redis()
-    # daemon_api_wrapper_manager.initialize_api_wrappers()
+    daemon_api_wrapper_manager.initialize_api_wrappers()
 
 
 @app.on_event("shutdown")
