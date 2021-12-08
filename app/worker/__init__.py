@@ -7,13 +7,13 @@ from app.worker.tasks import auth, payment, payout
 from app.redis import redis_manager
 from app.db import mongo_manager
 from app.db import get_default_database
-# from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
+from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
 
 
 async def startup(ctx):
     await mongo_manager.connect_to_database()
     await redis_manager.connect_to_redis()
-    # daemon_api_wrapper_manager.initialize_api_wrappers()
+    daemon_api_wrapper_manager.initialize_api_wrappers()
     ctx['db'] = await get_default_database()
     ctx['redis_client'] = redis_manager.redis_client
     if settings.SITE_TYPE != 'local':
