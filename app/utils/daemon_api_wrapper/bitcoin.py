@@ -1,4 +1,5 @@
 import json
+import logging
 from decimal import Decimal
 from typing import List, Optional, Dict
 
@@ -8,6 +9,8 @@ from requests.auth import HTTPBasicAuth
 from app.core.config import settings
 
 # TODO: Check whether result sent for error case too
+
+logger = logging.getLogger(settings.LOGGER_NAME)
 
 
 class BitcoinAPIWrapper(object):
@@ -23,9 +26,10 @@ class BitcoinAPIWrapper(object):
             "jsonrpc": "1.0", "id": 1,
             "method": method_name, "params": params
         })
-        print(data)
+        logger.info(f"Request data: {data}")
         res = requests.post(self.daemon_host_url, data, auth=self.auth)
-        print(res.content)
+        logger.info(
+            f"Response content: {res.content}\n Response code: {res.status_code}")
         if res.status_code == 200:
             return {"success": True, "data": res.json()}
         return {"success": False, "data": res.content}
