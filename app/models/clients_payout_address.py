@@ -1,6 +1,5 @@
 from typing import Dict
 import uuid
-import logging
 
 from pydantic import BaseModel, validator
 from pydantic.fields import Field
@@ -8,8 +7,6 @@ from pydantic.types import UUID4
 
 from app.core.config import settings
 from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
-
-logger = logging.getLogger(settings.LOGGER_NAME)
 
 
 class PayoutAddressBase(BaseModel):
@@ -36,9 +33,7 @@ class PayoutAddressCreate(PayoutAddressBase):
             raise ValueError("Payout address can't be empty")
         currency_name = values['currency_name']
         api_wrapper = daemon_api_wrapper_manager.api_wrappers[currency_name]
-        logger.info(f"Currency name {currency_name}")
         if not api_wrapper.validate_address(v):
-            logger.info('exec')
             raise ValueError("Invalid payout address")
         return v
 
