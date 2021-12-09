@@ -23,7 +23,9 @@ class BitcoinAPIWrapper(object):
             "jsonrpc": "1.0", "id": 1,
             "method": method_name, "params": params
         })
+        print(data)
         res = requests.post(self.daemon_host_url, data, auth=self.auth)
+        print(res.content)
         if res.status_code == 200:
             return {"success": True, "data": res.json()}
         return {"success": False, "data": res.content}
