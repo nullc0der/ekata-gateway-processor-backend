@@ -5,7 +5,7 @@ from app.core.config import settings
 
 from app.utils.daemon_api_wrapper.bitcoin import BitcoinAPIWrapper
 from app.utils.daemon_api_wrapper.dogecoin import DogeCoinAPIWrapper
-from app.utils.daemon_api_wrapper.monero import MoneroAPIWrapper
+# from app.utils.daemon_api_wrapper.monero import MoneroAPIWrapper
 
 logger = logging.getLogger(settings.LOGGER_NAME)
 
@@ -28,13 +28,13 @@ class DaemonApiWrapperManager(object):
             settings.DOGECOIN_WALLET_RPC_PASSWORD
         )
         self.api_wrappers['dogecoin'].check_wallet_loaded()
-        logger.info("Creating monero wrapper")
-        self.api_wrappers['monero'] = MoneroAPIWrapper(
-            settings.MONERO_DAEMON_HOST,
-            settings.MONERO_WALLET_RPC_USERNAME,
-            settings.MONERO_WALLET_RPC_PASSWORD
-        )
-        self.api_wrappers['monero'].check_wallet_loaded()
+        # logger.info("Creating monero wrapper")
+        # self.api_wrappers['monero'] = MoneroAPIWrapper(
+        #     settings.MONERO_DAEMON_HOST,
+        #     settings.MONERO_WALLET_RPC_USERNAME,
+        #     settings.MONERO_WALLET_RPC_PASSWORD
+        # )
+        # self.api_wrappers['monero'].check_wallet_loaded()
 
 
 daemon_api_wrapper_manager = DaemonApiWrapperManager()
