@@ -6,6 +6,7 @@ from pydantic import UUID4
 from app.constants.payment import CRYPTO_ATOMIC
 from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
 from app.utils.daemon_api_wrapper.monero import to_atomic
+from app.utils.daemon_api_wrapper.baza import to_atomic as baza_to_atomic
 
 
 async def task_create_clients_payout_queue(
@@ -74,6 +75,12 @@ async def task_clear_payout_queue(ctx):
                     payout_address['payout_address'],
                     to_atomic(total_payout_amount))
                 txid = tx_data['tx_hash'] if tx_data else None
+            if payout_queue['for_currency'] == 'baza':
+                tx_data = api_wrapper.send_to_address(
+                    payout_address['payout_address'],
+                    baza_to_atomic(total_payout_amount)
+                )
+                txid = tx_data['transactionHash'] if tx_data else None
             if txid:
                 raw_tx_data = api_wrapper.get_transaction_by_id(txid)
                 payout_processed_for_payments = [
@@ -92,7 +99,8 @@ async def task_clear_payout_queue(ctx):
                         or payout_queue['for_currency'] == 'dogecoin':
                     tx_fee = Decimal(
                         abs(raw_tx_data['fee']) if raw_tx_data else 0)
-                if payout_queue['for_currency'] == 'monero':
+                if payout_queue['for_currency'] == 'monero'\
+                        or payout_queue['for_currency'] == 'baza':
                     tx_fee = Decimal(0)
                 await ctx['db'].payouts.insert_one({
                     'currency_name': payout_queue['for_currency'],

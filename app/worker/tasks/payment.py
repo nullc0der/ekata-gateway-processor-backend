@@ -14,13 +14,21 @@ async def task_sync_currency_price(ctx):
     data = {}
     for currency in settings.ALLOWED_CURRENCY_NAME:
         try:
-            res = requests.get(
-                'https://api.coingecko.com/api/v3/simple/'
-                f'price?ids={currency}&vs_currencies=usd')
-            if res.status_code == 200:
-                data[currency] = res.json().get(currency, {})
+            if currency == 'baza':
+                res = requests.get(
+                    'https://www.southxchange.com/api/price/BAZA/TUSD')
+                if res.status_code == 200:
+                    data[currency] = {'usd': res.json()['Last']}
+                else:
+                    data[currency] = {}
             else:
-                data[currency] = {}
+                res = requests.get(
+                    'https://api.coingecko.com/api/v3/simple/'
+                    f'price?ids={currency}&vs_currencies=usd')
+                if res.status_code == 200:
+                    data[currency] = res.json().get(currency, {})
+                else:
+                    data[currency] = {}
         except ConnectionError:
             data[currency] = {}
     await ctx['redis_client'].set('currency_price', json.dumps(data))

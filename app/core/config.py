@@ -95,7 +95,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int
 
     # Currency supported
-    ALLOWED_CURRENCY_NAME: List[str] = ['bitcoin', 'dogecoin']
+    ALLOWED_CURRENCY_NAME: List[str] = ['bitcoin', 'dogecoin', 'baza']
     ALLOWED_FIAT_CURRENCY: List[str] = ['usd']
 
     # Bitcoin
@@ -118,6 +118,14 @@ class Settings(BaseSettings):
     # MONERO_MIN_CONFIRMATION_NEEDED: int
     # MONERO_WALLET_NAME: str
     # MONERO_WALLET_PASSWORD: str
+
+    # Baza
+    BAZA_COIN_DAEMON_HOST: str
+    BAZA_COIN_DAEMON_PORT: str
+    BAZA_WALLET_FILENAME: str
+    BAZA_WALLET_PASSWORD: str
+    BAZA_WALLET_API_URL: str
+    BAZA_WALLET_API_KEY: str
 
     # Sentry
     SENTRY_DSN: AnyHttpUrl

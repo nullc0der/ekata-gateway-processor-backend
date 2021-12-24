@@ -16,6 +16,7 @@ from app.models.payments import Payment, PaymentUpdate
 from app.utils.api_key import verify_and_update_api_key
 from app.utils.daemon_api_wrapper import daemon_api_wrapper_manager
 from app.utils.daemon_api_wrapper.monero import from_atomic
+from app.utils.daemon_api_wrapper.baza import from_atomic as baza_from_atomic
 from app.redis import redis_manager
 from app.crud import payments as payments_crud
 from app.constants.payment import (
@@ -106,10 +107,11 @@ def check_payment_valid(payment_results: List, currency_name: str) -> bool:
         for field in fields:
             if not payment_result.get(field):
                 return False
-            if not payment_result['confirmations'] >= \
-                    settings.dict()[
-                    f'{currency_name.upper()}_MIN_CONFIRMATION_NEEDED']:
-                return False
+            if currency_name != 'baza':
+                if not payment_result['confirmations'] >= \
+                        settings.dict()[
+                        f'{currency_name.upper()}_MIN_CONFIRMATION_NEEDED']:
+                    return False
     return True
 
 
@@ -118,11 +120,18 @@ def convert_payment_amount(
         currency_name: str) -> Decimal:
     if currency_name == 'monero':
         return from_atomic(amount).quantize(CRYPTO_ATOMIC, ROUND_HALF_UP)
+    if currency_name == 'baza':
+        return baza_from_atomic(amount).quantize(CRYPTO_ATOMIC, ROUND_HALF_UP)
     return Decimal(amount).quantize(CRYPTO_ATOMIC, ROUND_HALF_UP)
 
 
 def compare_payment_address(
-        payment_result: Dict, wallet_address: str) -> bool:
+        payment_result: Dict, wallet_address: str, currency_name: str) -> bool:
+    if currency_name == 'baza':
+        for transfer in payment_result['transfers']:
+            if transfer['address'] != wallet_address:
+                return False
+            return True
     return payment_result['address'] == wallet_address
 
 
@@ -133,9 +142,15 @@ def get_payment_amount_and_txid(
     amount = Decimal('0')
     txids_list = []
     for payment_result in payment_results:
-        if compare_payment_address(payment_result, wallet_address):
-            amount += convert_payment_amount(
-                payment_result.get(fields[0]), currency_name)
+        if compare_payment_address(
+                payment_result, wallet_address, currency_name):
+            if currency_name == 'baza':
+                for transfer in payment_result[fields[0]]:
+                    amount += convert_payment_amount(
+                        transfer['amount'], currency_name)
+            else:
+                amount += convert_payment_amount(
+                    payment_result[fields[0]], currency_name)
             txids = payment_result.get(fields[1])
             if isinstance(txids, list):
                 txids_list += txids
@@ -155,6 +170,8 @@ async def get_payment_status(
             payment.wallet_address
             if payment.currency_name != 'monero'
             else payment.monero_account_index)
+        if result and payment.currency_name == 'baza':
+            result = result['transactions']
         if result and check_payment_valid(result, payment.currency_name):
             amount, txids = get_payment_amount_and_txid(
                 result, payment.currency_name, payment.wallet_address)
