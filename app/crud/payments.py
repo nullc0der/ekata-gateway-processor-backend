@@ -71,8 +71,6 @@ async def create_payment(
         payment_form['amount_requested']
         * await get_currency_price(payment_create_data['currency_name']))\
         .quantize(CRYPTO_ATOMIC, ROUND_HALF_UP)
-    if payment_create_data['currency_name'] == 'baza':
-        amount_requested = 1
     await db.payments.insert_one(
         PaymentDB(
             **payment_create_data,

@@ -95,8 +95,8 @@ class Settings(BaseSettings):
     REDIS_PORT: int
 
     # Currency supported
-    ALLOWED_CURRENCY_NAME: List[str] = ['bitcoin', 'dogecoin', 'baza']
-    ALLOWED_FIAT_CURRENCY: List[str] = ['usd']
+    ALLOWED_CURRENCY_NAME: List[str]
+    ALLOWED_FIAT_CURRENCY: List[str]
 
     # Bitcoin
     BITCOIN_DAEMON_HOST: str
@@ -112,12 +112,12 @@ class Settings(BaseSettings):
     DOGECOIN_MIN_CONFIRMATION_NEEDED: int
 
     # Monero
-    # MONERO_DAEMON_HOST: str
-    # MONERO_WALLET_RPC_USERNAME: str
-    # MONERO_WALLET_RPC_PASSWORD: str
-    # MONERO_MIN_CONFIRMATION_NEEDED: int
-    # MONERO_WALLET_NAME: str
-    # MONERO_WALLET_PASSWORD: str
+    MONERO_DAEMON_HOST: str
+    MONERO_WALLET_RPC_USERNAME: str
+    MONERO_WALLET_RPC_PASSWORD: str
+    MONERO_MIN_CONFIRMATION_NEEDED: int
+    MONERO_WALLET_NAME: str
+    MONERO_WALLET_PASSWORD: str
 
     # Baza
     BAZA_COIN_DAEMON_HOST: str
