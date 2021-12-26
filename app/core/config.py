@@ -78,9 +78,9 @@ class Settings(BaseSettings):
             cls, v: Optional[str], values: Dict[str, Any]) -> str:
         if isinstance(v, str):
             return v
-        return f'mongodb+srv://{values.get("MONGO_USER")}' + \
+        return f'mongodb://{values.get("MONGO_USER")}' + \
             f':{values.get("MONGO_PASS")}@{values.get("MONGO_HOST")}' + \
-            f'/{values.get("MONGO_DB")}?retryWrites=true&w=majority'
+            f':{values.get("MONGO_PORT")}/{values.get("MONGO_DB")}'
 
     # Email
     SMTP_TLS: bool = True
