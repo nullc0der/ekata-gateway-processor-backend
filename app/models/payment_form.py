@@ -42,3 +42,4 @@ class ProjectInfo(BaseModel):
     id: UUID4
     enabled_currency: Optional[List[str]]
     domain_name: Optional[AnyHttpUrl]
+    is_non_profit: bool = False

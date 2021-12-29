@@ -12,6 +12,7 @@ class ProjectBase(BaseModel):
     domain_name: AnyHttpUrl
     enabled_currency: Optional[List[str]]
     webhook_url: Optional[AnyHttpUrl]
+    is_non_profit: bool = False
 
     @validator("enabled_currency", each_item=True)
     def validate_enabled_currency(cls, v: Optional[List[str]]):
@@ -44,6 +45,7 @@ class ProjectDB(ProjectBase):
 class Project(BaseModel):
     id: UUID4
     name: str
+    is_non_profit: bool = False
     enabled_currency: Optional[List[str]]
     date_created: Optional[datetime]
     domain_name: Optional[AnyHttpUrl]
