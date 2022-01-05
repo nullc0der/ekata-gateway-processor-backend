@@ -19,7 +19,7 @@ class PayoutAddressBase(BaseModel):
             raise ValueError("Payout address can't be empty")
         return v
 
-    @validator("currency_name")
+    @validator("currency_name", pre=True)
     def validate_currency_name(cls, v: str):
         if v not in settings.ALLOWED_CURRENCY_NAME:
             raise ValueError(f"Currency name {v} is not allowed")
