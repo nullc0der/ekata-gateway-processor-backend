@@ -213,7 +213,7 @@ async def create_payment_signature(
     project = await db.projects.find_one(
         {'id': payment['related_project_id']})
     message = f"{payment['payment_id']}" + \
-              f"{payment['wallet_address']}{payment['amount_received']}"
+              f"{payment['wallet_address']}{payment['currency_name']}"
     return hmac.new(
         project['payment_signature_secret'].encode(),
         message.encode(), hashlib.sha256).hexdigest()

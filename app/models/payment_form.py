@@ -20,6 +20,8 @@ class PaymentFormBase(BaseModel):
 
 
 class PaymentFormDB(PaymentFormBase):
+    # TODO: I suspect id uniqueness is not checked,
+    #  we should check it, check code properly
     id: str = Field(default_factory=lambda: secrets.token_urlsafe(16))
     related_project_id: UUID4
 
