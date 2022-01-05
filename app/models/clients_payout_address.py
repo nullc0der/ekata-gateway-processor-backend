@@ -32,7 +32,10 @@ class PayoutAddressCreate(PayoutAddressBase):
         if not v:
             raise ValueError("Payout address can't be empty")
         currency_name = values['currency_name']
-        api_wrapper = daemon_api_wrapper_manager.api_wrappers[currency_name]
+        api_wrapper = daemon_api_wrapper_manager.api_wrappers.get(
+            currency_name)
+        if not api_wrapper:
+            raise ValueError("Invalid payout address")
         if not api_wrapper.validate_address(v):
             raise ValueError("Invalid payout address")
         return v
