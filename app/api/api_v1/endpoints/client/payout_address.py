@@ -13,7 +13,7 @@ from app.models.clients_payout_address import (
 from app.models.projects import ProjectUpdate
 from app.models.users import User
 from app.crud import clients_payout_address, projects
-from app.api.api_v1.dependencies.auth import current_active_verified_user
+from app.api.api_v1.dependencies.auth.auth import current_active_verified_user
 from app.permissions import auth as auth_permissions
 from app.worker import arq_manager
 

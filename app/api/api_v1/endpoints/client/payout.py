@@ -7,7 +7,7 @@ from app.models.users import User
 from app.crud import clients_payout
 from app.db import get_default_database
 from app.permissions import auth as auth_permissions
-from app.api.api_v1.dependencies.auth import current_active_verified_user
+from app.api.api_v1.dependencies.auth.auth import current_active_verified_user
 
 payouts_router = APIRouter()
 

@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 
-from pydantic import validator
+from pyotp import random_base32
+
+from pydantic import validator, BaseModel, UUID4, Field
 from fastapi_users import models
 
 
@@ -41,3 +43,29 @@ class UserUpdate(models.CreateUpdateDictModel):
 
 class UserDB(User, models.BaseUserDB):
     pass
+
+
+class UserTwoFactorBase(BaseModel):
+    is_enabled: bool = False
+
+
+class UserTwoFactorDB(UserTwoFactorBase):
+    owner_id: UUID4
+    recovery_codes_hashed: Optional[List[Dict]]
+    secret_key: str = Field(default_factory=random_base32)
+
+
+class UserTwoFactorUpdate(BaseModel):
+    code: int
+
+
+class UserTwoFactorResponse(UserTwoFactorBase):
+    pass
+
+
+class UserTwoFactorCreateResponse(BaseModel):
+    provisioning_uri: str
+
+
+class UserTwoFactorUpdateResponse(BaseModel):
+    recovery_codes: List
