@@ -14,11 +14,6 @@ from app.utils.user_two_factor import (
     get_recovery_codes, verify_two_factor_recovery_code)
 from app.worker import arq_manager
 
-# TODO: Send email on enable and disable and ask for password on enable/disable
-# , code is not getting scanned in dark mode sometime, need to give user
-# one more code time window, service worker fix, text changes and copy in
-# a well, close button and disable click outside, hint for recovery code
-
 
 async def get_user_two_factor_state(
         db: AsyncIOMotorDatabase, user_id: UUID4) -> UserTwoFactorResponse:
