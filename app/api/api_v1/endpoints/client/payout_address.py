@@ -11,7 +11,7 @@ from app.models.clients_payout_address import (
     PayoutAddress, PayoutAddressCreate, PayoutAddressUpdate
 )
 from app.models.projects import ProjectUpdate
-from app.models.users import User
+from app.models.users import UserDB
 from app.crud import clients_payout_address, projects
 from app.api.api_v1.dependencies.auth.auth import current_active_verified_user
 from app.permissions import auth as auth_permissions
@@ -23,7 +23,7 @@ payout_address_router = APIRouter()
 @payout_address_router.get('', response_model=List[PayoutAddress])
 async def get_payout_addresses(
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     payout_addresses = \
         await clients_payout_address.get_clients_payout_addresses(
@@ -35,7 +35,7 @@ async def get_payout_addresses(
 async def create_payout_address(
         payout_address_create_data: PayoutAddressCreate,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     payout_addresses = \
         await clients_payout_address.get_clients_payout_addresses(
@@ -64,7 +64,7 @@ async def update_payout_address(
         payout_address_id: UUID4,
         payout_address_update_data: PayoutAddressUpdate,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     payout_address = \
         await clients_payout_address.get_clients_payout_address(
@@ -85,7 +85,7 @@ async def update_payout_address(
 async def delete_payout_address(
         payout_address_id: UUID4,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     payout_address = \
         await clients_payout_address.get_clients_payout_address(

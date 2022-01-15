@@ -59,6 +59,14 @@ class UserTwoFactorUpdate(BaseModel):
     code: int
 
 
+class UserTwoFactorCreate(BaseModel):
+    password: str
+
+
+class UserTwoFactorDelete(UserTwoFactorCreate):
+    pass
+
+
 class UserTwoFactorResponse(UserTwoFactorBase):
     pass
 

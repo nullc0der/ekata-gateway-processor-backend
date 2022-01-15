@@ -9,7 +9,7 @@ from starlette import status
 from app.db import get_default_database
 from app.models.projects import (
     Project, ProjectCreate, ProjectCreateResponse, ProjectStats, ProjectUpdate)
-from app.models.users import User
+from app.models.users import UserDB
 from app.crud import projects, payments
 from app.api.api_v1.dependencies.auth.auth import current_active_verified_user
 from app.permissions import auth as auth_permissions
@@ -21,7 +21,7 @@ projects_router = APIRouter()
 @projects_router.get('', response_model=List[Project])
 async def get_projects(
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     clients_projects = await projects.get_clients_projects(db, user.id)
     return clients_projects
@@ -31,7 +31,7 @@ async def get_projects(
 async def create_project(
         project_data: ProjectCreate,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     await check_payout_address_added(db, user, project_data)
     project = await projects.create_clients_project(db, project_data, user.id)
@@ -43,7 +43,7 @@ async def update_project(
         project_id: UUID4,
         project_update_data: ProjectUpdate,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     await check_payout_address_added(db, user, project_update_data)
     project = await projects.get_clients_project(db, project_id, user.id)
@@ -62,7 +62,7 @@ async def update_project(
 async def delete_project(
         project_id: UUID4,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     project = await projects.get_clients_project(db, project_id, user.id)
     if not project:
@@ -83,7 +83,7 @@ async def get_projects_payments(
         search: str = '',
         currency_name: str = '',
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     project = await projects.get_clients_project(
         db, project_id, user_id=user.id)
@@ -101,7 +101,7 @@ async def get_projects_payments(
 @projects_router.get('/stats', response_model=ProjectStats)
 async def get_projects_stats(
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     clients_projects = await projects.get_clients_projects(db, user_id=user.id)
     response_data = {
@@ -120,7 +120,7 @@ async def get_projects_stats(
 async def get_new_api_key(
         project_id: UUID4,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     project = await projects.get_clients_project(db, project_id, user.id)
     if not project:
@@ -137,7 +137,7 @@ async def get_new_api_key(
 async def get_new_payment_signature_secret(
         project_id: UUID4,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
-        user: User = Depends(current_active_verified_user)):
+        user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
     project = await projects.get_clients_project(db, project_id, user.id)
     if not project:

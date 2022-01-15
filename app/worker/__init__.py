@@ -39,6 +39,7 @@ class WorkerSettings:
     functions = [
         auth.task_send_request_verify_email,
         auth.task_send_forgot_password_email,
+        auth.task_send_two_factor_email,
         payment.task_send_payment_data_to_webhook,
         payout.task_create_clients_payout_queue,
         payout.task_add_payment_to_payout_queue
