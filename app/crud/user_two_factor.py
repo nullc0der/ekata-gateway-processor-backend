@@ -89,6 +89,10 @@ async def regenerate_two_factor_recovery_codes(
             }
         }
     )
+    user = await db.users.find_one({'id': user_id})
+    await arq_manager.pool.enqueue_job(
+        'task_send_two_factor_recovery_code_regeneration_email',
+        UserDB(**user))
     return UserTwoFactorUpdateResponse(recovery_codes=recovery_codes)
 
 

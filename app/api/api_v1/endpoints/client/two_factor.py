@@ -5,7 +5,7 @@ from starlette import status
 
 from app.db import get_default_database
 from app.models.users import (
-    UserDB, UserTwoFactorCreateResponse,
+    UserDB, UserTwoFactorCreateResponse, UserTwoFactorRecoveryCodeRegeneration,
     UserTwoFactorResponse, UserTwoFactorUpdateResponse,
     UserTwoFactorUpdate, UserTwoFactorCreate, UserTwoFactorDelete)
 from app.crud import user_two_factor
@@ -65,8 +65,14 @@ async def disable_user_two_factor(
 @two_factor_router.post(
     '/get-new-recovery-codes', response_model=UserTwoFactorUpdateResponse)
 async def get_new_recovery_codes(
+        regeneration_data: UserTwoFactorRecoveryCodeRegeneration,
         db: AsyncIOMotorDatabase = Depends(get_default_database),
         user: UserDB = Depends(current_active_verified_user)):
     auth_permissions.is_user_is_client(user)
+    if not verify_user_password(regeneration_data.password, user):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Invalid Password'
+        )
     return await user_two_factor.regenerate_two_factor_recovery_codes(
         db, user.id)

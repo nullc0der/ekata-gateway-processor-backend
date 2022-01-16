@@ -67,6 +67,10 @@ class UserTwoFactorDelete(UserTwoFactorCreate):
     pass
 
 
+class UserTwoFactorRecoveryCodeRegeneration(UserTwoFactorCreate):
+    pass
+
+
 class UserTwoFactorResponse(UserTwoFactorBase):
     pass
 

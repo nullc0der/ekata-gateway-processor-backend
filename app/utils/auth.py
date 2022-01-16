@@ -60,3 +60,18 @@ def send_two_factor_email(user: UserDB, enabled: bool):
             'enabled': enabled
         }
     )
+
+
+def send_two_factor_recovery_code_regeneration_email(user: UserDB):
+    with open(Path(settings.EMAIL_TEMPLATE_DIR) /
+              'auth/two_factor_recovery_code_regeneration.html') as f:
+        html_template = f.read()
+    send_email(
+        email_to=user.email, email_from='gatewayprocessor@ekata.io',
+        email_from_name='Ekata Gateway Processor',
+        subject_template="Two factor recovery code regenerated",
+        html_template=html_template,
+        environment={
+            'useremail': user.email,
+        }
+    )
