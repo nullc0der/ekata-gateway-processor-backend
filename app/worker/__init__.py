@@ -43,8 +43,7 @@ class WorkerSettings:
         auth.task_send_two_factor_recovery_code_regeneration_email,
         payment.task_send_payment_data_to_webhook,
         payout.task_create_clients_payout_queue,
-        payout.task_add_payment_to_payout_queue,
-        payout.task_clear_payout_queue
+        payout.task_add_payment_to_payout_queue
     ]
     cron_jobs = [
         cron(
